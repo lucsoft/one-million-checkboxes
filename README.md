@@ -1,0 +1,3 @@
+# One Million Checkboxes
+
+Based on <https://eieio.games/nonsense/game-14-one-million-checkboxes/>
