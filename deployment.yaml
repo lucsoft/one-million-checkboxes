@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: one-million-backend
+spec:
+  selector:
+    matchLabels:
+      app: one-million-backend
+  template:
+    metadata:
+      labels:
+        app: one-million-backend
+    spec:
+      containers:
+        - name: one-million-backend
+          image: ghcr.io/lucsoft/one-million-checkboxes:server
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 6969
+              name: http
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: ghcr
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: one-million-frontend
+spec:
+  selector:
+    matchLabels:
+      app: one-million-frontend
+  template:
+    metadata:
+      labels:
+        app: one-million-frontend
+    spec:
+      containers:
+        - name: one-million-frontend
+          image: ghcr.io/lucsoft/one-million-checkboxes:client
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+              name: http
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: ghcr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: one-million-backend
+spec:
+  selector:
+    app: one-million-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      name: http
+      targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: one-million-frontend
+spec:
+  selector:
+    app: one-million-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      name: http
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: one-million
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+    - hosts:
+        - one-million.lucsoft.de
+      secretName: one-million-tls
+  rules:
+    - host: one-million.lucsoft.de
+      http:
+        paths:
+          - path: /ws
+            pathType: Prefix
+            backend:
+              service:
+                name: one-million-backend
+                port:
+                  name: http
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: one-million-frontend
+                port:
+                  name: http

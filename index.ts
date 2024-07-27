@@ -1,5 +1,5 @@
-import { WebGen, Body, Content, Label, Checkbox, asRef, css, Component, Custom, refMerge, Box } from "../WebGen/mod.ts";
-import { createStableWebSocket } from "../WebGen/extended.ts";
+import { WebGen, Body, Content, Label, Checkbox, asRef, css, Component, Custom, refMerge, Box } from "webgen/mod.ts";
+import { createStableWebSocket } from "webgen/extended.ts";
 
 WebGen();
 

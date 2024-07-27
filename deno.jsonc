@@ -4,5 +4,8 @@
             "dom",
             "deno.window"
         ]
+    },
+    "imports": {
+        "webgen/": "https://raw.githubusercontent.com/lucsoft/WebGen/6ccd194/"
     }
 }
